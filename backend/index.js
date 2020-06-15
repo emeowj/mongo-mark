@@ -7,8 +7,11 @@ app.use(bodyParser());
 
 const router = new Router();
 
+// Used to store all notes in meomry
+const notes = new Map();
+
 router.get('/notes', (ctx, next) => {
-  ctx.body = {};
+  ctx.body = Array.from(notes.values());
 });
 
 const noteRouter = new Router({
@@ -16,24 +19,67 @@ const noteRouter = new Router({
 });
 noteRouter
   .get('/:note_id', (ctx, next) => {
-    ctx.body = { id: ctx.params.note_id };
-    next();
+    const id = ctx.params.note_id;
+    if (notes.has(id)) {
+      ctx.body = notes.get(id);
+    } else {
+      ctx.status = 404;
+      ctx.body = {
+        error: `Note with id ${id} does not exits`,
+      };
+    }
   })
   .put('/', (ctx, next) => {
     const request = ctx.request.body;
-    console.log(`Creating note ${request}`);
-    ctx.body = { status: 'ok' };
-    next();
+    const now = new Date().getTime();
+    const note = {
+      id: `${notes.size}`,
+      title: request.title || 'No title',
+      content: request.content || '',
+      created: now,
+      updated: now,
+    };
+    notes.set(note.id, note);
+    console.log(`Created note ${note.id}`);
+    ctx.status = 201;
+    ctx.body = note;
   })
   .delete('/:note_id', (ctx, next) => {
-    console.log(`deleting note ${ctx.params.note_id}`);
-    ctx.body = { status: 'ok' };
-    next();
+    const id = ctx.params.note_id;
+    if (notes.has(id)) {
+      notes.delete(id);
+      console.log(`Deleted note ${id}`);
+      ctx.status = 204;
+      ctx.body = {};
+    } else {
+      ctx.status = 404;
+      ctx.body = {
+        error: `Note with id ${id} does not exits`,
+      };
+    }
   })
   .patch('/:note_id', (ctx, next) => {
-    console.log(`updating note ${ctx.params.note_id}`);
-    ctx.body = { status: 'ok' };
-    next();
+    const id = ctx.params.note_id;
+    if (notes.has(id)) {
+      const now = new Date().getTime();
+      const request = ctx.request.body;
+      const note = notes.get(id);
+      const updates = {
+        updated: now,
+        title: request.title || note.title,
+        content: request.content || note.content,
+      };
+      const updated = Object.assign(note, updates);
+      notes.set(id, updated);
+      console.log(`Updated note ${id}`);
+      ctx.status = 202;
+      ctx.body = updated;
+    } else {
+      ctx.status = 404;
+      ctx.body = {
+        error: `Note with id ${id} does not exits`,
+      };
+    }
   });
 
 router.use(noteRouter.routes());
