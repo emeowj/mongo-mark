@@ -5,6 +5,15 @@ const bodyParser = require('koa-bodyparser');
 const app = new Koa();
 app.use(bodyParser());
 
+if (process.env.NODE_ENV === 'development') {
+  app.use(async (context, next) => {
+    await next();
+    context.set({
+      'Access-Control-Allow-Origin': '*',
+    });
+  });
+}
+
 const router = new Router();
 
 // Used to store all notes in meomry
