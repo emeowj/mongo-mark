@@ -5,13 +5,13 @@
 </template>
 
 <script>
-import NoteList from './components/NoteList.vue';
+import NoteList from "./components/NoteList.vue";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
-    NoteList,
-  },
+    NoteList
+  }
 };
 </script>
 
