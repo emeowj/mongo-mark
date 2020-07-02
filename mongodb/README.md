@@ -20,6 +20,7 @@ version: '3.6'
 
 services:
   mongodb-dev:
+    container_name: mongo
     image: 'mongo:4.2.2'
     env_file:
       - ./mongodb/local.env
@@ -97,4 +98,10 @@ Now we can connect to this database with the following URL
 
 ```js
 mongodb://app:app_pwd@localhost:27017/?authSource=admin
+```
+
+If we were to connect to the db inside a container, we need to replace `localhost` with the container name:
+
+```js
+mongodb://app:app_pwd@mongo:27017/?authSource=admin
 ```
