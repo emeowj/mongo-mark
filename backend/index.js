@@ -19,6 +19,20 @@ const router = new Router();
 // Used to store all notes in meomry
 const notes = new Map();
 
+// Add some test notes so we don't get an empty list when nodemon restarts
+// the application.
+if (process.env.NODE_ENV === 'development') {
+  const now = new Date().getTime();
+  for (i in [1, 2, 3]) {
+    notes.set(`test-note-${i}`, {
+      title: 'Test note',
+      content: 'hello',
+      created: now,
+      updated: now,
+    });
+  }
+}
+
 router.get('/notes', (ctx, next) => {
   ctx.body = Array.from(notes.values());
 });
