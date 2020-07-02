@@ -13,7 +13,8 @@
   "dependencies": {
     "@koa/router": "^9.1.0",
     "koa": "^2.12.1",
-    "koa-bodyparser": "^4.3.0"
+    "koa-bodyparser": "^4.3.0",
+    "mongoose": "^5.9.21"
   },
   "devDependencies": {
     "nodemon": "^2.0.4"
