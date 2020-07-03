@@ -21,6 +21,8 @@ services:
       - ./backend/local.env
     volumes:
       - ./backend:/app
+    depends_on:
+      - 'mongodb-dev'
     ports:
       - '3000:3000'
 
