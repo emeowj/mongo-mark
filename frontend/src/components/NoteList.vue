@@ -2,7 +2,11 @@
   <div>
     <ul>
       <li v-for="note in notes" :key="note.id">
-        <note-list-item :note="note" @selected="handleSelected" />
+        <note-list-item
+          :note="note"
+          @selected="handleSelected"
+          :selected="note._id === selectedNote"
+        />
       </li>
     </ul>
   </div>
@@ -17,7 +21,8 @@ export default {
   },
   data: function() {
     return {
-      notes: []
+      notes: [],
+      selectedNote: ""
     };
   },
   created: function() {
@@ -29,6 +34,7 @@ export default {
   },
   methods: {
     handleSelected(note) {
+      this.selectedNote = note._id;
       this.$emit("selected", note);
     }
   }

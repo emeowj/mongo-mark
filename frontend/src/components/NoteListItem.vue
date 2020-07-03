@@ -1,6 +1,10 @@
 <template>
-  <div class="border flex flex-col items-start p-2 m-w-32" @click="handleClick">
-    <div class="text-lg font-bold">{{ note.title }}</div>
+  <div
+    class="flex flex-col items-start p-2 m-w-32"
+    :class="{selected: selected}"
+    @click="handleClick"
+  >
+    <div class="text-md font-bold">{{ note.title }}</div>
     <p class="text-gray-700">{{ updated }}</p>
   </div>
 </template>
@@ -11,6 +15,10 @@ export default {
     note: {
       type: Object,
       required: true
+    },
+    selected: {
+      type: Boolean,
+      default: false
     }
   },
   computed: {
@@ -26,4 +34,8 @@ export default {
 };
 </script>
 
-<style></style>
+<style scoped>
+.selected {
+  @apply bg-gray-200  border-l-4 border-orange-500;
+}
+</style>
