@@ -9,7 +9,6 @@ app.use(bodyParser());
 
 mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
-  useFindAndModify: false,
 });
 
 const db = mongoose.connection;
