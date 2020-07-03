@@ -1,12 +1,8 @@
 <template>
   <div>
     <ul>
-      <li v-for="note in notes" :key="note.id">
-        <note-list-item
-          :note="note"
-          @selected="handleSelected"
-          :selected="note._id === selectedNote"
-        />
+      <li v-for="note in notes" :key="note.id" @click="() => handleSelected(note)">
+        <note-list-item :note="note" :selected="selectedNote === note._id" />
       </li>
     </ul>
   </div>

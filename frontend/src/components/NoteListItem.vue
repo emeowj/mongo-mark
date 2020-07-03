@@ -1,9 +1,5 @@
 <template>
-  <div
-    class="flex flex-col items-start p-2 m-w-32"
-    :class="{selected: selected}"
-    @click="handleClick"
-  >
+  <div class="flex flex-col items-start p-2 m-w-32" :class="{selected: selected}">
     <div class="text-md font-bold">{{ note.title }}</div>
     <p class="text-gray-700">{{ updated }}</p>
   </div>
@@ -24,11 +20,6 @@ export default {
   computed: {
     updated() {
       return new Date(this.note.updated).toLocaleDateString("en-US");
-    }
-  },
-  methods: {
-    handleClick() {
-      this.$emit("selected", this.note);
     }
   }
 };
