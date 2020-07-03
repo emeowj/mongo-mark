@@ -1,9 +1,7 @@
 <template>
-  <div class="note">
-    <h1>{{ note.title }}</h1>
-    <div>Created: {{ created }}</div>
-    <div>Last updated: {{ updated }}</div>
-    <p>{{ note.content }}</p>
+  <div class="border flex flex-col items-start p-2 m-w-32" @click="handleClick">
+    <div class="text-lg font-bold">{{ note.title }}</div>
+    <p class="text-gray-700">{{ updated }}</p>
   </div>
 </template>
 
@@ -16,11 +14,13 @@ export default {
     }
   },
   computed: {
-    created() {
-      return new Date(this.note.created).toLocaleDateString("en-US");
-    },
     updated() {
       return new Date(this.note.updated).toLocaleDateString("en-US");
+    }
+  },
+  methods: {
+    handleClick() {
+      this.$emit("selected", this.note);
     }
   }
 };
