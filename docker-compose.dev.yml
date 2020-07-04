@@ -3,6 +3,7 @@ version: '3.6'
 services:
   # name of our container
   frontend-dev:
+    container_name: frontend
     build:
       context: frontend
       target: dev
@@ -14,6 +15,7 @@ services:
       - '8080:8080'
 
   backend-dev:
+    container_name: backend
     build:
       context: backend
       target: dev
@@ -37,6 +39,15 @@ services:
       - mongodb:/data/db
     ports:
       - '27017-27019:27017-27019'
+
+  nginx:
+    restart: always
+    container_name: nginx
+    build:
+      context: ./nginx
+      target: dev
+    ports:
+      - '8000:8000'
 
 volumes:
   mongodb:
