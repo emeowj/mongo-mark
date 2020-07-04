@@ -1,7 +1,11 @@
 <template>
   <div class="h-full flex flex-col justify-between">
     <ul>
-      <li v-for="note in notes" :key="note.id" @click="() => handleSelected(note)">
+      <li
+        v-for="note in notes"
+        :key="note.id"
+        @click="() => handleSelected(note)"
+      >
         <note-list-item :note="note" :selected="selectedNote === note._id" />
       </li>
     </ul>
@@ -14,52 +18,43 @@
 </template>
 
 <script>
-import NoteListItem from "./NoteListItem.vue";
+import NoteListItem from './NoteListItem.vue';
 
 export default {
   components: {
-    NoteListItem
+    NoteListItem,
   },
   data: function() {
     return {
       notes: [],
-      selectedNote: ""
+      selectedNote: '',
     };
   },
   created: function() {
-    fetch("/api/notes")
-      .then(res => res.json())
-      .then(data => {
-        this.notes = data;
-        if (this.notes) {
-          this.handleSelected(this.notes[0]);
-        }
-      });
+    this.$http.get('/notes').then((res) => {
+      this.notes = res.data;
+      if (this.notes) {
+        this.handleSelected(this.notes[0]);
+      }
+    });
   },
   methods: {
     handleSelected(note) {
       this.selectedNote = note._id;
-      this.$emit("selected", note);
+      this.$emit('selected', note);
     },
     addNewNote() {
       const note = {
-        title: "New Note",
-        content: ""
+        title: 'New Note',
+        content: '',
       };
-      fetch("/api/note", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(note)
-      })
-        .then(response => response.json())
-        .then(created => {
-          this.notes.push(created);
-          this.handleSelected(created);
-        });
-    }
-  }
+      this.$http.put('note', note).then((res) => {
+        const created = res.data;
+        this.notes.push(created);
+        this.handleSelected(created);
+      });
+    },
+  },
 };
 </script>
 
