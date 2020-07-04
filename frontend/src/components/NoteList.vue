@@ -32,7 +32,7 @@ export default {
       .then(data => {
         this.notes = data;
         if (this.notes) {
-          this.selectedNote = this.notes[0]._id;
+          this.handleSelected(this.notes[0]);
         }
       });
   },
