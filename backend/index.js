@@ -78,7 +78,7 @@ noteRouter
     if (request.content) {
       updates.content = request.content;
     }
-    await Note.findByIdAndUpdate(id, updates)
+    await Note.findByIdAndUpdate(id, updates, { new: true })
       .exec()
       .then((note) => {
         if (!note) ctx.throw(404, `no note with id ${id}`);
