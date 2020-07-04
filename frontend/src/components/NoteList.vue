@@ -6,7 +6,11 @@
         :key="note.id"
         @click="() => handleSelected(note)"
       >
-        <note-list-item :note="note" :selected="selectedNote === note._id" />
+        <note-list-item
+          :note="note"
+          :selected="selectedNote === note._id"
+          @deleteNote="deleteNote"
+        />
       </li>
     </ul>
     <div class="flex items-center border-t-2 border-gray-400">
@@ -52,6 +56,11 @@ export default {
         const created = res.data;
         this.notes.push(created);
         this.handleSelected(created);
+      });
+    },
+    deleteNote(id) {
+      this.$http.delete(`/note/${id}`).then(() => {
+        this.notes = this.notes.filter((note) => note._id != id);
       });
     },
   },
