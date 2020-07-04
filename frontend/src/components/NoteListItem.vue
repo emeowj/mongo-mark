@@ -4,7 +4,7 @@
       v-if="state === State.DELETING"
       class="delete-buttons absolute w-full h-full flex justify-around items-center"
     >
-      <button class="btn text-white" @click.stop="state = State.DELETING">
+      <button class="btn text-white" @click.stop="state = State.DEFAULT">
         Cancel
       </button>
       <button class="btn text-orange-500" @click.stop="deleteNote">
