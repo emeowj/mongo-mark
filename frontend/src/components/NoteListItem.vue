@@ -1,15 +1,11 @@
 <template>
-  <div class="relative m-w-32 " :class="{ selected: selected }">
+  <div class="relative m-w-32" :class="{ selected: selected }">
     <div
       v-if="confirmDelete"
       class="delete-buttons absolute w-full h-full flex justify-around items-center"
     >
-      <button class="btn text-white" @click.stop="confirmDelete = false">
-        Cancel
-      </button>
-      <button class="btn text-orange-500" @click.stop="deleteNote">
-        Delete
-      </button>
+      <button class="btn text-white" @click.stop="confirmDelete = false">Cancel</button>
+      <button class="btn text-orange-500" @click.stop="deleteNote">Delete</button>
     </div>
     <div class="item flex justify-between p-2 border" @dblclick="editNote">
       <div class="flex flex-col items-start justify-between">
@@ -18,12 +14,13 @@
           class="title-input"
           type="text"
           v-model="newTitle"
-          @blur="editing = false"
+          @blur="updateNote"
           @keyup.enter="updateNote"
         />
         <div v-else class="text-md font-bold">{{ note.title }}</div>
         <p class="text-gray-700 text-sm">
-          <i class="fas fa-clock text-gray-400"></i>{{ updated }}
+          <i class="fas fa-clock text-gray-400"></i>
+          {{ updated }}
         </p>
       </div>
       <div
@@ -45,28 +42,29 @@ export default {
   props: {
     note: {
       type: Object,
-      required: true,
+      required: true
     },
     selected: {
       type: Boolean,
-      default: false,
-    },
+      default: false
+    }
   },
   data: function() {
     return {
       confirmDelete: false,
       editing: false,
-      newTitle: this.note.title,
+      newTitle: this.note.title
     };
   },
   computed: {
     updated() {
       return moment(this.note.updated).fromNow();
-    },
+    }
   },
   methods: {
     deleteNote() {
       this.$emit('deleteNote', this.note._id);
+      this.confirmDelete = false;
     },
     editNote() {
       this.editing = true;
@@ -79,8 +77,8 @@ export default {
       if (this.newTitle != this.note.title) {
         this.$emit('updateNote', { id: this.note._id, title: this.newTitle });
       }
-    },
-  },
+    }
+  }
 };
 </script>
 
