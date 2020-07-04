@@ -17,15 +17,6 @@ db.once('open', function () {
   console.log('connected to: ' + db.name);
 });
 
-if (process.env.NODE_ENV === 'development') {
-  app.use(async (context, next) => {
-    await next();
-    context.set({
-      'Access-Control-Allow-Origin': '*',
-    });
-  });
-}
-
 const router = new Router();
 
 router.get('/notes', async (ctx) => {
@@ -57,15 +48,12 @@ noteRouter
       title: request.title || 'No title',
       content: request.content || '',
     });
-    await note
-      .save()
-      .exec()
-      .then((note) => {
-        if (!note) ctx.throw(404, `no note with id ${id}`);
-        console.log(`Created note ${note._id}`);
-        ctx.status = 201;
-        ctx.body = note;
-      });
+    await note.save().then((note) => {
+      if (!note) ctx.throw(404, `no note with id ${id}`);
+      console.log(`Created note ${note._id}`);
+      ctx.status = 201;
+      ctx.body = note;
+    });
   })
   .delete('/:note_id', async (ctx) => {
     const id = ctx.params.note_id;
