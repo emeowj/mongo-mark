@@ -2,7 +2,7 @@
   <div class="relative" :class="{ selected: selected }">
     <div
       v-if="confirmDelete"
-      class="delete-buttons absolute w-full h-full flex justify-around  items-center"
+      class="delete-buttons absolute w-full h-full flex justify-around items-center"
     >
       <button class="btn text-white" @click.stop="confirmDelete = false">
         Cancel
@@ -11,10 +11,12 @@
         Delete
       </button>
     </div>
-    <div class="item flex justify-between p-2 m-w-32 border h-24">
-      <div class="flex flex-col items-start">
+    <div class="item flex justify-between p-2 m-w-32 border">
+      <div class="flex flex-col items-start justify-between">
         <div class="text-md font-bold">{{ note.title }}</div>
-        <p class="text-gray-700">{{ updated }}</p>
+        <p class="text-gray-700 text-sm">
+          <i class="fas fa-clock text-gray-400"></i>{{ updated }}
+        </p>
       </div>
       <div
         class="menu invisible hover:visible flex items-center text-gray-400 text-sm"
@@ -28,6 +30,8 @@
 </template>
 
 <script>
+import moment from 'moment';
+
 export default {
   props: {
     note: {
@@ -46,7 +50,7 @@ export default {
   },
   computed: {
     updated() {
-      return new Date(this.note.updated).toLocaleDateString('en-US');
+      return moment(this.note.updated).fromNow();
     },
   },
   methods: {
