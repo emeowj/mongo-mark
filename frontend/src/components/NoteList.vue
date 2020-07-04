@@ -10,6 +10,7 @@
           :note="note"
           :selected="selectedNote === note._id"
           @deleteNote="deleteNote"
+          @updateNote="updateNote"
         />
       </li>
     </ul>
@@ -61,6 +62,15 @@ export default {
     deleteNote(id) {
       this.$http.delete(`/note/${id}`).then(() => {
         this.notes = this.notes.filter((note) => note._id != id);
+      });
+    },
+    updateNote({ id, title }) {
+      console.log(`update note ${id} with title ${title}`);
+      this.$http.patch(`/note/${id}`, { title }).then((res) => {
+        const index = this.notes.findIndex((note) => note._id === id);
+        const updated = res.data;
+        this.notes.splice(index, 1, updated);
+        this.handleSelected(updated);
       });
     },
   },

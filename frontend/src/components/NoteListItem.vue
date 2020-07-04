@@ -1,5 +1,5 @@
 <template>
-  <div class="relative" :class="{ selected: selected }">
+  <div class="relative m-w-32 " :class="{ selected: selected }">
     <div
       v-if="confirmDelete"
       class="delete-buttons absolute w-full h-full flex justify-around items-center"
@@ -11,14 +11,23 @@
         Delete
       </button>
     </div>
-    <div class="item flex justify-between p-2 m-w-32 border">
+    <div class="item flex justify-between p-2 border" @dblclick="editNote">
       <div class="flex flex-col items-start justify-between">
-        <div class="text-md font-bold">{{ note.title }}</div>
+        <input
+          v-if="editing"
+          class="title-input"
+          type="text"
+          v-model="newTitle"
+          @blur="editing = false"
+          @keyup.enter="updateNote"
+        />
+        <div v-else class="text-md font-bold">{{ note.title }}</div>
         <p class="text-gray-700 text-sm">
           <i class="fas fa-clock text-gray-400"></i>{{ updated }}
         </p>
       </div>
       <div
+        v-if="!editing"
         class="menu invisible hover:visible flex items-center text-gray-400 text-sm"
       >
         <button @click.stop="confirmDelete = true">
@@ -46,6 +55,8 @@ export default {
   data: function() {
     return {
       confirmDelete: false,
+      editing: false,
+      newTitle: this.note.title,
     };
   },
   computed: {
@@ -56,6 +67,18 @@ export default {
   methods: {
     deleteNote() {
       this.$emit('deleteNote', this.note._id);
+    },
+    editNote() {
+      this.editing = true;
+      this.$nextTick(() => {
+        this.$el.querySelector('.title-input').focus();
+      });
+    },
+    updateNote() {
+      this.editing = false;
+      if (this.newTitle != this.note.title) {
+        this.$emit('updateNote', { id: this.note._id, title: this.newTitle });
+      }
     },
   },
 };
@@ -76,5 +99,9 @@ export default {
 
 .item:hover > .menu {
   visibility: visible;
+}
+
+input {
+  @apply border-b-2 border-orange-500 bg-transparent;
 }
 </style>
