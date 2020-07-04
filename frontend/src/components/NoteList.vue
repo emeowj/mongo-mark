@@ -27,7 +27,7 @@ export default {
     };
   },
   created: function() {
-    fetch("http://localhost:3000/notes")
+    fetch("/api/notes")
       .then(res => res.json())
       .then(data => {
         this.notes = data;
@@ -42,7 +42,22 @@ export default {
       this.$emit("selected", note);
     },
     addNewNote() {
-      console.log("create new note");
+      const note = {
+        title: "New Note",
+        content: ""
+      };
+      fetch("/api/note", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(note)
+      })
+        .then(response => response.json())
+        .then(created => {
+          this.notes.push(created);
+          this.handleSelected(created);
+        });
     }
   }
 };
