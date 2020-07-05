@@ -33,12 +33,24 @@ export default {
       required: true,
     },
   },
+  data: function() {
+    return {
+      stylesheet: 'retro.css',
+    };
+  },
   created: function() {
     this.md = new MarkdownIt();
   },
   computed: {
     renderedContent() {
-      return this.md.render(this.note.content);
+      return `
+        <html>
+        <head>
+        <link rel="stylesheet" href="/markdown-css/${this.stylesheet}">
+        </head>
+        <body>${this.md.render(this.note.content)}</body>
+        </html>
+        `;
     },
   },
   methods: {
