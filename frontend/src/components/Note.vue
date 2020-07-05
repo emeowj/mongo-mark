@@ -25,6 +25,7 @@
 
 <script>
 import MarkdownIt from 'markdown-it';
+import MarkdownItContainer from 'markdown-it-container';
 import hljs from 'highlight.js';
 
 export default {
@@ -52,6 +53,7 @@ export default {
         return '';
       },
     });
+    this.md.use(MarkdownItContainer, 'warning');
   },
   computed: {
     renderedContent() {
