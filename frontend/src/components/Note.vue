@@ -25,6 +25,7 @@
 
 <script>
 import MarkdownIt from 'markdown-it';
+import hljs from 'highlight.js';
 
 export default {
   props: {
@@ -35,22 +36,31 @@ export default {
   },
   data: function() {
     return {
-      stylesheet: 'retro.css',
+      stylesheet: 'modest.css',
     };
   },
   created: function() {
-    this.md = new MarkdownIt();
+    this.md = new MarkdownIt({
+      highlight: function(str, lang) {
+        if (lang && hljs.getLanguage(lang)) {
+          try {
+            return hljs.highlight(lang, str).value;
+          } catch (error) {
+            // ignore
+          }
+        }
+        return '';
+      },
+    });
   },
   computed: {
     renderedContent() {
-      return `
-        <html>
-        <head>
-        <link rel="stylesheet" href="/markdown-css/${this.stylesheet}">
-        </head>
-        <body>${this.md.render(this.note.content)}</body>
-        </html>
-        `;
+      return `<html><head><link rel="stylesheet" href="/markdown-css/${
+        this.stylesheet
+      }"><link rel="stylesheet"
+      href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.0.0/build/styles/default.min.css"></head><body>${this.md.render(
+        this.note.content
+      )}</body></html>`;
     },
   },
   methods: {
