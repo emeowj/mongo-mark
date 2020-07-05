@@ -9,6 +9,7 @@
           name="content"
           :value="note.content"
           @input="update"
+          @keydown="handleSave"
           class="w-full h-full"
         ></textarea>
       </div>
@@ -70,6 +71,16 @@ export default {
       const updated = Object.assign({}, this.note);
       updated.content = ev.target.value;
       this.$emit('update', { note: updated, buffer: true });
+    },
+    handleSave: function(event) {
+      if (event.ctrlKey || event.metaKey) {
+        if ('s' === String.fromCharCode(event.which).toLowerCase()) {
+          const updated = Object.assign({}, this.note);
+          updated.content = event.target.value;
+          this.$emit('update', { note: updated, buffer: false });
+          event.preventDefault();
+        }
+      }
     },
   },
 };

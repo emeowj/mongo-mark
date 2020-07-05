@@ -25,8 +25,13 @@ export const store = new Vuex.Store({
         if (state.selectedNote._id === note._id) {
           state.selectedNote = note;
         }
-        if (buffer && !state.modifiedNoteIds.includes(note._id)) {
+        const pendingIndex = state.modifiedNoteIds.findIndex(
+          (id) => id === note._id
+        );
+        if (buffer && pendingIndex < 0) {
           state.modifiedNoteIds.push(note._id);
+        } else if (!buffer && pendingIndex >= 0) {
+          state.modifiedNoteIds.splice(pendingIndex, 1);
         }
       }
     },

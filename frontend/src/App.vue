@@ -27,7 +27,8 @@ import { mapGetters } from 'vuex';
 import NoteList from './components/NoteList.vue';
 import Note from './components/Note.vue';
 
-const AUTO_SAVE_TIMEOUT = 30000;
+const AUTO_SAVE_INTERVAL = 30000;
+
 export default {
   name: 'App',
   components: {
@@ -36,7 +37,11 @@ export default {
   },
   created() {
     this.$store.dispatch('init');
-    setTimeout(this.saveChangedNotes, AUTO_SAVE_TIMEOUT);
+    const i = setInterval(
+      () => this.$store.dispatch('batchSave'),
+      AUTO_SAVE_INTERVAL
+    );
+    this.$once('hooks:beforeDestory', () => clearInterval(i));
   },
   computed: {
     ...mapGetters(['notes', 'selectedNote']),
@@ -44,10 +49,6 @@ export default {
   methods: {
     updateNote({ note, buffer }) {
       this.$store.dispatch('updateNote', { note, buffer });
-    },
-    saveChangedNotes() {
-      this.$store.dispatch('batchSave');
-      setTimeout(this.saveChangedNotes, AUTO_SAVE_TIMEOUT);
     },
   },
 };
