@@ -3,37 +3,50 @@
     <div class="w-64 h-full flex flex-col">
       <div class="w-full p-2 flex items-center text-white bg-blue-800">
         <i class="fas fa-bars mr-2"></i>
-        <input type="text" class="mr-2 px-2 w-48 rounded bg-blue-700" placeholder="search" />
+        <input
+          type="text"
+          class="mr-2 px-2 w-48 rounded bg-blue-700"
+          placeholder="search"
+        />
         <i class="fas fa-search mr-2"></i>
       </div>
       <note-list @selected="selectNote"></note-list>
     </div>
     <div class="flex-1 bg-gray-200">
-      <note :note="currentNote" v-if="currentNote"></note>
+      <note :note="currentNote" @update="updateNote" v-if="currentNote"></note>
     </div>
   </div>
 </template>
 
 <script>
-import NoteList from "./components/NoteList.vue";
-import Note from "./components/Note.vue";
+import NoteList from './components/NoteList.vue';
+import Note from './components/Note.vue';
 
 export default {
-  name: "App",
+  name: 'App',
   data: function() {
     return {
-      currentNote: null
+      currentNote: null,
+      modified: new Map(),
     };
   },
   components: {
     NoteList,
-    Note
+    Note,
   },
   methods: {
     selectNote(note) {
+      if (this.modified.has(note._id)) {
+        this.currentNote = this.modified.get(note._id);
+      } else {
+        this.currentNote = note;
+      }
+    },
+    updateNote(note) {
+      this.modified.set(note._id, note);
       this.currentNote = note;
-    }
-  }
+    },
+  },
 };
 </script>
 

@@ -53,6 +53,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    hasUnsavedChange: {
+      type: Boolean,
+      default: false,
+    },
   },
   watch: {
     state: function(val) {
