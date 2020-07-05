@@ -22,11 +22,17 @@
           @keyup.enter="updateNote"
           @click.stop
         />
-        <div v-else class="text-md font-bold">{{ note.title }}</div>
-        <p class="text-gray-700 text-sm">
+        <div v-else class="text-md font-bold flex items-center">
+          <i
+            v-if="hasUnsavedChanges"
+            class="fas fa-circle text-orange-600 text-xs mr-2"
+          ></i
+          >{{ note.title }}
+        </div>
+        <span class="text-gray-700 text-sm">
           <i class="fas fa-clock text-gray-400"></i>
           {{ updated }}
-        </p>
+        </span>
       </div>
       <div
         v-if="state !== State.EDITING"
@@ -53,7 +59,7 @@ export default {
       type: Boolean,
       default: false,
     },
-    hasUnsavedChange: {
+    hasUnsavedChanges: {
       type: Boolean,
       default: false,
     },
@@ -102,7 +108,7 @@ export default {
   methods: {
     deleteNote() {
       this.$emit('deleteNote', this.note._id);
-      this.state = this.State.DELETING;
+      this.state = this.State.DEFAULT;
     },
     editNote() {
       this.state = this.State.EDITING;
@@ -114,7 +120,7 @@ export default {
       this.state = this.State.DEFAULT;
       if (this.newTitle != this.note.title) {
         this.note.title = this.newTitle;
-        this.$emit('updateNote', { id: this.note._id, title: this.newTitle });
+        this.$emit('updateNote', { _id: this.note._id, title: this.newTitle });
       }
     },
   },

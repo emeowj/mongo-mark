@@ -69,7 +69,7 @@ export default {
     update: function(ev) {
       const updated = Object.assign({}, this.note);
       updated.content = ev.target.value;
-      this.$emit('update', updated);
+      this.$emit('update', { note: updated, buffer: true });
     },
   },
 };

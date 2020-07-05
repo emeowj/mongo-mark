@@ -8,7 +8,8 @@
       >
         <note-list-item
           :note="note"
-          :selected="selectedNote === note._id"
+          :selected="selectedNoteId === note._id"
+          :has-unsaved-changes="hasUnsavedChanges(note._id)"
           @deleteNote="deleteNote"
           @updateNote="updateNote"
         />
@@ -29,59 +30,43 @@ export default {
   components: {
     NoteListItem,
   },
-  data: function() {
-    return {
-      notes: [],
-      selectedNote: '',
-    };
+  props: {
+    notes: {
+      type: Array,
+      default: () => [],
+    },
+    selectedNote: {
+      type: Object,
+      default: null,
+    },
   },
-  created: function() {
-    this.$http.get('/notes').then((res) => {
-      this.notes = res.data;
-      if (this.notes) {
-        this.handleSelected(this.notes[0]);
+  computed: {
+    selectedNoteId() {
+      if (this.selectedNote) {
+        return this.selectedNote._id;
       }
-    });
+      return '';
+    },
   },
   methods: {
     handleSelected(note) {
-      this.selectedNote = note._id;
-      this.$emit('selected', note);
+      this.$store.dispatch('selectNote', note._id);
+    },
+    hasUnsavedChanges(noteId) {
+      return this.$store.getters.hasUnsavedChanges(noteId);
     },
     addNewNote() {
       const note = {
         title: 'New Note',
         content: '',
       };
-      this.$http.put('note', note).then((res) => {
-        const created = res.data;
-        this.notes.push(created);
-        this.handleSelected(created);
-      });
+      this.$store.dispatch('addNote', note);
     },
     deleteNote(id) {
-      this.$http.delete(`/note/${id}`).then(() => {
-        const index = this.notes.findIndex((note) => note._id === id);
-        this.notes.splice(index, 1);
-        // Update selected note if the deleted note is currently selected.
-        if (this.selectedNote === id) {
-          let selected = null;
-          if (index >= this.notes.length) {
-            selected = this.notes[0] || null;
-          } else {
-            selected = this.notes[index];
-          }
-          this.handleSelected(selected);
-        }
-      });
+      this.$store.dispatch('deleteNote', id);
     },
-    updateNote({ id, title }) {
-      this.$http.patch(`/note/${id}`, { title }).then((res) => {
-        const index = this.notes.findIndex((note) => note._id === id);
-        const updated = res.data;
-        this.notes.splice(index, 1, updated);
-        this.handleSelected(updated);
-      });
+    updateNote(note) {
+      this.$store.dispatch('updateNote', { note: note, buffer: false });
     },
   },
 };

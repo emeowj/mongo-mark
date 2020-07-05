@@ -10,41 +10,44 @@
         />
         <i class="fas fa-search mr-2"></i>
       </div>
-      <note-list @selected="selectNote"></note-list>
+      <note-list :notes="notes" :selected-note="selectedNote"></note-list>
     </div>
     <div class="flex-1 bg-gray-200">
-      <note :note="currentNote" @update="updateNote" v-if="currentNote"></note>
+      <note
+        :note="selectedNote"
+        v-if="selectedNote"
+        @update="updateNote"
+      ></note>
     </div>
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 import NoteList from './components/NoteList.vue';
 import Note from './components/Note.vue';
 
+const AUTO_SAVE_TIMEOUT = 30000;
 export default {
   name: 'App',
-  data: function() {
-    return {
-      currentNote: null,
-      modified: new Map(),
-    };
-  },
   components: {
     NoteList,
     Note,
   },
+  created() {
+    this.$store.dispatch('init');
+    setTimeout(this.saveChangedNotes, AUTO_SAVE_TIMEOUT);
+  },
+  computed: {
+    ...mapGetters(['notes', 'selectedNote']),
+  },
   methods: {
-    selectNote(note) {
-      if (this.modified.has(note._id)) {
-        this.currentNote = this.modified.get(note._id);
-      } else {
-        this.currentNote = note;
-      }
+    updateNote({ note, buffer }) {
+      this.$store.dispatch('updateNote', { note, buffer });
     },
-    updateNote(note) {
-      this.modified.set(note._id, note);
-      this.currentNote = note;
+    saveChangedNotes() {
+      this.$store.dispatch('batchSave');
+      setTimeout(this.saveChangedNotes, AUTO_SAVE_TIMEOUT);
     },
   },
 };
