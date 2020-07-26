@@ -14,11 +14,8 @@
         ></textarea>
       </div>
       <div class="w-1/2 px-2 py-2">
-        <iframe
-          :srcdoc="renderedContent"
-          frameborder="0"
-          class="w-full h-full"
-        ></iframe>
+        <article class="prose prose-sm lg:prose-lg" v-html="compiledMarkdown">
+        </article>
       </div>
     </div>
   </div>
@@ -57,14 +54,9 @@ export default {
     this.md.use(MarkdownItContainer, 'warning');
   },
   computed: {
-    renderedContent() {
-      return `<html><head><link rel="stylesheet" href="/markdown-css/${
-        this.stylesheet
-      }"><link rel="stylesheet"
-      href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.0.0/build/styles/default.min.css"></head><body>${this.md.render(
-        this.note.content
-      )}</body></html>`;
-    },
+    compiledMarkdown: function() {
+      return this.md.render(this.note.content);
+    }
   },
   methods: {
     update: function(ev) {
